@@ -23,3 +23,4 @@ todo-app/
 
 
 👨‍💻 Built as part of my frontend development journey.
+
