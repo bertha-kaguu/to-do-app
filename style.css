@@ -115,16 +115,21 @@
   border-radius: 4px;
   }
   
-  /* Theme button */
+  .theme-toggle-container {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+  }
+  
   .theme-btn {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 8px;
-  border: none;
-  background: #333;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
+    width: auto; 
+    margin: 0;
+    padding: 8px 15px; 
+    border: none;
+    background: #333;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
   }
   
   /* Dark mode */
