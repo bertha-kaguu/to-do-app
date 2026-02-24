@@ -5,6 +5,10 @@ const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 
+console.log(taskInput);
+console.log(addTaskBtn);
+console.log(taskList);
+
 // Load tasks when page opens
 document.addEventListener("DOMContentLoaded", loadTasks);
 
@@ -21,7 +25,6 @@ addTask();
 function addTask() {
 const taskText = taskInput.value.trim();
 
-```
 if (taskText === "") {
     alert("Please enter a task");
     return;
@@ -31,14 +34,12 @@ createTaskElement(taskText, false);
 saveTask(taskText);
 
 taskInput.value = "";
-```
 
 }
 
 function createTaskElement(text, completed) {
 const li = document.createElement("li");
 
-```
 if (completed) {
     li.classList.add("completed");
 }
@@ -74,7 +75,6 @@ li.appendChild(span);
 li.appendChild(buttonContainer);
 
 taskList.appendChild(li);
-```
 
 }
 
