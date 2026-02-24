@@ -1,10 +1,13 @@
-console.log("Tier-2 To-Do Loaded");
+console.log("To-Do Loaded");
 
 const taskInput = document.getElementById("taskInput");
+const dueDateInput = document.getElementById("dueDate");
+const categorySelect = document.getElementById("categorySelect");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
 const filterButtons = document.querySelectorAll(".filters button");
 const themeToggle = document.getElementById("themeToggle");
+const taskCounter = document.getElementById("taskCounter");
 
 document.addEventListener("DOMContentLoaded", () => {
 loadTasks();
@@ -59,22 +62,31 @@ const completed = li.classList.contains("completed");
 // Add task
 function addTask() {
 const text = taskInput.value.trim();
-if (text === "") return;
+const date = dueDateInput.value;
+const category = categorySelect.value;
 
-createTaskElement(text, false);
+if (!text) return;
+
+createTaskElement({ text, date, category, completed: false });
 updateLocalStorage();
 
 taskInput.value = "";
+dueDateInput.value = "";
+updateCounter();
 
 }
 
 // Create task element
-function createTaskElement(text, completed) {
+function createTaskElement(task) {
 const li = document.createElement("li");
-if (completed) li.classList.add("completed");
+if (task.completed) li.classList.add("completed");
 
-const span = document.createElement("span");
-span.textContent = text;
+const categorySpan = document.createElement("span");
+categorySpan.textContent = `[${task.category}] `;
+categorySpan.classList.add("task-category", task.category);
+
+const textSpan = document.createElement("span");
+textSpan.textContent = task.text + (task.date ? ` (Due: ${task.date})` : "");
 
 const buttons = document.createElement("div");
 buttons.classList.add("task-buttons");
@@ -86,6 +98,7 @@ completeBtn.classList.add("complete-btn");
 completeBtn.onclick = () => {
     li.classList.toggle("completed");
     updateLocalStorage();
+    updateCounter();
 };
 
 // Edit
@@ -93,10 +106,11 @@ const editBtn = document.createElement("button");
 editBtn.textContent = "Edit";
 editBtn.classList.add("edit-btn");
 editBtn.onclick = () => {
-    const newText = prompt("Edit task:", span.textContent);
+    const newText = prompt("Edit task:", task.text);
     if (newText) {
-        span.textContent = newText;
-        updateLocalStorage();
+        textSpan.textContent = newText + (task.date ? ` (Due: ${task.date})` : "");
+        task.text = newText;
+        updateLocalStorage();;
     }
 };
 
@@ -107,14 +121,11 @@ deleteBtn.classList.add("delete-btn");
 deleteBtn.onclick = () => {
     li.remove();
     updateLocalStorage();
+    updateCounter();
 };
 
-buttons.appendChild(completeBtn);
-buttons.appendChild(editBtn);
-buttons.appendChild(deleteBtn);
-
-li.appendChild(span);
-li.appendChild(buttons);
+buttons.append(completeBtn, editBtn, deleteBtn);
+li.append(categorySpan, textSpan, buttons);
 taskList.appendChild(li);
 
 }
@@ -123,16 +134,22 @@ taskList.appendChild(li);
 function updateLocalStorage() {
 const tasks = [];
 document.querySelectorAll("#taskList li").forEach(li => {
-tasks.push({
-text: li.querySelector("span").textContent,
-completed: li.classList.contains("completed")
-});
+  const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "");
+  const text = li.querySelectorAll("span")[1].textContent;
+  const completed = li.classList.contains("completed");
+  tasks.push({ text, category, completed });
 });
 localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function loadTasks() {
 const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-tasks.forEach(task => createTaskElement(task.text, task.completed));
+tasks.forEach(createTaskElement);
+updateCounter();
+}
+// Task counter
+function updateCounter() {
+  const tasksLeft = document.querySelectorAll("#taskList li:not(.completed)").length;
+  taskCounter.textContent = `${tasksLeft} task${tasksLeft !== 1 ? "s" : ""} left`;
 }
 updateThemeButtonText();
