@@ -73,6 +73,7 @@ buttons.classList.add("task-buttons");
 // Complete
 const completeBtn = document.createElement("button");
 completeBtn.textContent = "✓";
+completeBtn.classList.add("complete-btn");
 completeBtn.onclick = () => {
     li.classList.toggle("completed");
     updateLocalStorage();
@@ -81,6 +82,7 @@ completeBtn.onclick = () => {
 // Edit
 const editBtn = document.createElement("button");
 editBtn.textContent = "Edit";
+editBtn.classList.add("edit-btn");
 editBtn.onclick = () => {
     const newText = prompt("Edit task:", span.textContent);
     if (newText) {
@@ -92,6 +94,7 @@ editBtn.onclick = () => {
 // Delete
 const deleteBtn = document.createElement("button");
 deleteBtn.textContent = "X";
+deleteBtn.classList.add("delete-btn");
 deleteBtn.onclick = () => {
     li.remove();
     updateLocalStorage();

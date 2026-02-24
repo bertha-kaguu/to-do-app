@@ -92,6 +92,12 @@
   background: #dc3545;
   color: white;
   }
+
+  .edit-btn {
+    background: #6c757d; /* gray */
+    color: white;
+  }
+
   /* Filters */
 .filters {
   display: flex;
