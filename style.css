@@ -83,20 +83,20 @@
   color: white;
   }
   
-  .complete-btn {
-  background: #28a745;
-  color: white;
-  }
-  
-  .delete-btn {
-  background: #dc3545;
-  color: white;
-  }
-
-  .edit-btn {
-    background: #6c757d; /* gray */
+  .task-buttons button.complete-btn {
+    background: #28a745;
     color: white;
-  }
+}
+
+.task-buttons button.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.task-buttons button.edit-btn {
+    background: #6c757d;
+    color: white;
+}
 
   /* Filters */
 .filters {
@@ -140,7 +140,7 @@
   body.dark li {
   background: #2c2c2c;
   }
-  
+
   body.dark h1 {
     background: #1e1e1e;
     color: white;
