@@ -90,4 +90,46 @@
   background: #dc3545;
   color: white;
   }
+  /* Filters */
+.filters {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  }
+  
+  .filters button {
+  flex: 1;
+  margin: 0 3px;
+  padding: 6px;
+  border: none;
+  background: #e0e0e0;
+  cursor: pointer;
+  border-radius: 4px;
+  }
+  
+  /* Theme button */
+  .theme-btn {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 8px;
+  border: none;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  }
+  
+  /* Dark mode */
+  body.dark {
+  background: #121212;
+  }
+  
+  body.dark .container {
+  background: #1e1e1e;
+  color: white;
+  }
+  
+  body.dark li {
+  background: #2c2c2c;
+  }
   
