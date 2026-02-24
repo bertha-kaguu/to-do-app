@@ -1,99 +1,112 @@
-// Check if script is connected
-console.log("To-Do Script Loaded");
+console.log("Tier-2 To-Do Loaded");
 
 const taskInput = document.getElementById("taskInput");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
+const filterButtons = document.querySelectorAll(".filters button");
+const themeToggle = document.getElementById("themeToggle");
 
-console.log(taskInput);
-console.log(addTaskBtn);
-console.log(taskList);
-
-// Load tasks when page opens
-document.addEventListener("DOMContentLoaded", loadTasks);
-
-// Add task when button is clicked
-addTaskBtn.addEventListener("click", addTask);
-
-// Add task when Enter key is pressed
-taskInput.addEventListener("keypress", function (e) {
-if (e.key === "Enter") {
-addTask();
-}
+document.addEventListener("DOMContentLoaded", () => {
+loadTasks();
+loadTheme();
 });
 
-function addTask() {
-const taskText = taskInput.value.trim();
+addTaskBtn.addEventListener("click", addTask);
 
-if (taskText === "") {
-    alert("Please enter a task");
-    return;
+taskInput.addEventListener("keypress", function(e) {
+if (e.key === "Enter") addTask();
+});
+
+// Theme toggle
+themeToggle.addEventListener("click", () => {
+document.body.classList.toggle("dark");
+localStorage.setItem("theme", document.body.classList.contains("dark"));
+});
+
+function loadTheme() {
+const dark = localStorage.getItem("theme") === "true";
+if (dark) document.body.classList.add("dark");
 }
 
-createTaskElement(taskText, false);
-saveTask(taskText);
+// Filters
+filterButtons.forEach(btn => {
+btn.addEventListener("click", () => {
+const filter = btn.dataset.filter;
+filterTasks(filter);
+});
+});
+
+function filterTasks(filter) {
+document.querySelectorAll("#taskList li").forEach(li => {
+const completed = li.classList.contains("completed");
+
+    if (filter === "all") li.style.display = "flex";
+    if (filter === "active") li.style.display = completed ? "none" : "flex";
+    if (filter === "completed") li.style.display = completed ? "flex" : "none";
+});
+
+}
+
+// Add task
+function addTask() {
+const text = taskInput.value.trim();
+if (text === "") return;
+
+createTaskElement(text, false);
+updateLocalStorage();
 
 taskInput.value = "";
 
 }
 
+// Create task element
 function createTaskElement(text, completed) {
 const li = document.createElement("li");
-
-if (completed) {
-    li.classList.add("completed");
-}
+if (completed) li.classList.add("completed");
 
 const span = document.createElement("span");
 span.textContent = text;
 
-const buttonContainer = document.createElement("div");
-buttonContainer.classList.add("task-buttons");
+const buttons = document.createElement("div");
 
-// Complete button
+// Complete
 const completeBtn = document.createElement("button");
 completeBtn.textContent = "✓";
-completeBtn.classList.add("complete-btn");
-completeBtn.onclick = function () {
+completeBtn.onclick = () => {
     li.classList.toggle("completed");
     updateLocalStorage();
 };
 
-// Delete button
+// Edit
+const editBtn = document.createElement("button");
+editBtn.textContent = "Edit";
+editBtn.onclick = () => {
+    const newText = prompt("Edit task:", span.textContent);
+    if (newText) {
+        span.textContent = newText;
+        updateLocalStorage();
+    }
+};
+
+// Delete
 const deleteBtn = document.createElement("button");
 deleteBtn.textContent = "X";
-deleteBtn.classList.add("delete-btn");
-deleteBtn.onclick = function () {
+deleteBtn.onclick = () => {
     li.remove();
     updateLocalStorage();
 };
 
-buttonContainer.appendChild(completeBtn);
-buttonContainer.appendChild(deleteBtn);
+buttons.appendChild(completeBtn);
+buttons.appendChild(editBtn);
+buttons.appendChild(deleteBtn);
 
 li.appendChild(span);
-li.appendChild(buttonContainer);
-
+li.appendChild(buttons);
 taskList.appendChild(li);
 
 }
 
-// Save task to localStorage
-function saveTask(text) {
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-tasks.push({ text: text, completed: false });
-localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-// Load tasks from localStorage
-function loadTasks() {
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-tasks.forEach(task => {
-createTaskElement(task.text, task.completed);
-});
-}
-
-// Update localStorage after changes
+// Local storage
 function updateLocalStorage() {
 const tasks = [];
 document.querySelectorAll("#taskList li").forEach(li => {
@@ -103,4 +116,9 @@ completed: li.classList.contains("completed")
 });
 });
 localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function loadTasks() {
+const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+tasks.forEach(task => createTaskElement(task.text, task.completed));
 }
