@@ -68,6 +68,7 @@ const span = document.createElement("span");
 span.textContent = text;
 
 const buttons = document.createElement("div");
+buttons.classList.add("task-buttons");
 
 // Complete
 const completeBtn = document.createElement("button");
