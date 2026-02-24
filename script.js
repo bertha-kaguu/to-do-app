@@ -21,12 +21,21 @@ if (e.key === "Enter") addTask();
 themeToggle.addEventListener("click", () => {
 document.body.classList.toggle("dark");
 localStorage.setItem("theme", document.body.classList.contains("dark"));
+updateThemeButtonText();
 });
 
 function loadTheme() {
 const dark = localStorage.getItem("theme") === "true";
 if (dark) document.body.classList.add("dark");
 }
+
+function updateThemeButtonText() {
+    if (document.body.classList.contains("dark")) {
+      themeToggle.textContent = "Light Mode";
+    } else {
+      themeToggle.textContent = "Dark Mode";
+    }
+  }
 
 // Filters
 filterButtons.forEach(btn => {
@@ -126,3 +135,4 @@ function loadTasks() {
 const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 tasks.forEach(task => createTaskElement(task.text, task.completed));
 }
+updateThemeButtonText();
