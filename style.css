@@ -181,6 +181,26 @@
   font-weight: bold;
    }
 
+   .due-today {
+    border-left: 5px solid #ffc107; /* Yellow */
+    background: #fff3cd;
+   }
+
+   .due-tomorrow {
+    border-left: 5px solid #fd7e14; /* Orange */
+    background: #ffe8cc
+   }
+
+   .due-today span {
+    color: #ffc107;
+    font-weight: bold;
+   }
+
+   .due-tomorrow span{
+    color: #fd7e14;
+    font-weight: bold; 
+   }
+
    .search-container {
     margin-bottom: 15px;
    }

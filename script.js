@@ -103,6 +103,19 @@ if (task.date && task.date < today && !task.completed) {
     li.classList.add("overdue");
 }
 
+if (task.date) {
+  const dueDate = new Date(task.date);
+  const todayDate = new Date();
+  const tomorrowDate = new Date();
+  tomorrowDate.setDate(todayDate.getDate() + 1);
+
+  if (dueDate.toDateString() === todayDate.toDateString()) {
+      li.classList.add("due-today");
+  } else if (dueDate.toDateString() === tomorrowDate.toDateString()) {
+      li.classList.add("due-tomorrow");
+  }
+}
+
 const categorySpan = document.createElement("span");
 categorySpan.textContent = `[${task.category}] `;
 categorySpan.classList.add("task-category", task.category.trim());
