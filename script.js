@@ -77,7 +77,7 @@ const priority = prioritySelect.value;
 if (!text) return;
 
 createTaskElement({ text, date, category, priority, completed: false });
-updateLocalStorage({ text, date, category, priority, completed: false });
+updateLocalStorage();
 
 taskInput.value = "";
 dueDateInput.value = "";
@@ -104,16 +104,19 @@ if (task.date && task.date < today && !task.completed) {
 }
 
 if (task.date) {
-  const dueDate = new Date(task.date);
-  const todayDate = new Date();
-  const tomorrowDate = new Date();
-  tomorrowDate.setDate(todayDate.getDate() + 1);
+    const today = new Date().toISOString().split("T")[0];
 
-  if (dueDate.toDateString() === todayDate.toDateString()) {
-      li.classList.add("due-today");
-  } else if (dueDate.toDateString() === tomorrowDate.toDateString()) {
-      li.classList.add("due-tomorrow");
-  }
+    const tomorrowDate = new Date();
+    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+    const tomorrow = tomorrowDate.toISOString().split("T")[0];
+
+    li.classList.remove("due-today", "due-tomorrow");
+
+    if (task.date === today) {
+        li.classList.add("due-today");
+    } else if (task.date === tomorrow) {
+        li.classList.add("due-tomorrow");
+    }
 }
 
 const categorySpan = document.createElement("span");
@@ -176,8 +179,8 @@ taskList.appendChild(li);
 
 // Local storage
 function updateLocalStorage() {
-const tasks = [];
-document.querySelectorAll("#taskList li").forEach(li => {
+  const tasks = [];
+  document.querySelectorAll("#taskList li").forEach(li => {
   const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "").trim();
   const textFull = li.querySelectorAll("span")[1].textContent;
   const completed = li.classList.contains("completed");
@@ -191,7 +194,7 @@ document.querySelectorAll("#taskList li").forEach(li => {
         }
   const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
 
-    tasks.push({
+  tasks.push({
         text: match ? match[1] : textFull,
         date: match && match[2] ? match[2] : "",
         category: category,
@@ -208,6 +211,7 @@ function loadTasks() {
   
   try {
       const tasks = JSON.parse(data);
+      taskList.innerHTML = "";
       tasks.forEach(task => createTaskElement(task));
       updateCounter();
   } catch (e) {
