@@ -77,7 +77,7 @@ const priority = prioritySelect.value;
 if (!text) return;
 
 createTaskElement({ text, date, category, priority, completed: false });
-updateLocalStorage();
+updateLocalStorage({ text, date, category, priority, completed: false });
 
 taskInput.value = "";
 dueDateInput.value = "";
@@ -85,6 +85,12 @@ updateCounter();
 
 }
 
+function getLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
 // Create task element
 function createTaskElement(task) {
   task = {
@@ -98,25 +104,30 @@ const li = document.createElement("li");
 if (task.completed) li.classList.add("completed");
 
 li.classList.add(`priority-${task.priority}`);
-const today = new Date().toISOString().split("T")[0];
+const today = getLocalDateString();
 if (task.date && task.date < today && !task.completed) {
     li.classList.add("overdue");
 }
 
 if (task.date) {
-    const today = new Date().toISOString().split("T")[0];
+    const today = getLocalDateString();
 
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    const tomorrow = tomorrowDate.toISOString().split("T")[0];
+    const tomorrow = getLocalDateString(tomorrowDate);
 
-    li.classList.remove("due-today", "due-tomorrow");
+    li.classList.remove("overdue", "due-today", "due-tomorrow");
 
-    if (task.date === today) {
-        li.classList.add("due-today");
-    } else if (task.date === tomorrow) {
-        li.classList.add("due-tomorrow");
-    }
+    if (task.date && !task.completed) {
+        if (task.date < today) {
+            li.classList.add("overdue");
+        } 
+        else if (task.date === today) {
+            li.classList.add("due-today");
+        } 
+        else if (task.date === tomorrow) {
+            li.classList.add("due-tomorrow");
+        }
 }
 
 const categorySpan = document.createElement("span");
@@ -128,7 +139,7 @@ let displayText = task.text;
 if (task.date) {
     displayText += ` (Due: ${task.date})`;
 }
-if (task.date && task.date < today && !task.completed) {
+if (li.classList.contains("overdue")) {
     displayText = "⚠️ " + displayText;
 }
 
@@ -235,4 +246,5 @@ function filterTasksBySearch(searchTerm) {
           task.style.display = "none";
       }
   });
+}
 }
