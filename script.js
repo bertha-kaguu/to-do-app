@@ -81,13 +81,25 @@ function createTaskElement(task) {
 const li = document.createElement("li");
 if (task.completed) li.classList.add("completed");
 
+const today = new Date().toISOString().split("T")[0];
+if (task.date && task.date < today && !task.completed) {
+    li.classList.add("overdue");
+}
+
 const categorySpan = document.createElement("span");
 categorySpan.textContent = `[${task.category}] `;
 categorySpan.classList.add("task-category", task.category);
 
 const textSpan = document.createElement("span");
-textSpan.textContent = task.text + (task.date ? ` (Due: ${task.date})` : "");
+let displayText = task.text;
+if (task.date) {
+    displayText += ` (Due: ${task.date})`;
+}
+if (task.date && task.date < today && !task.completed) {
+    displayText = "⚠️ " + displayText;
+}
 
+textSpan.textContent = displayText;
 const buttons = document.createElement("div");
 buttons.classList.add("task-buttons");
 
@@ -97,6 +109,7 @@ completeBtn.textContent = "✓";
 completeBtn.classList.add("complete-btn");
 completeBtn.onclick = () => {
     li.classList.toggle("completed");
+    li.classList.remove("overdue");
     updateLocalStorage();
     updateCounter();
 };
@@ -108,8 +121,9 @@ editBtn.classList.add("edit-btn");
 editBtn.onclick = () => {
     const newText = prompt("Edit task:", task.text);
     if (newText) {
-        textSpan.textContent = newText + (task.date ? ` (Due: ${task.date})` : "");
         task.text = newText;
+        createTaskElement(task);
+        li.remove();
         updateLocalStorage();;
     }
 };
@@ -137,7 +151,14 @@ document.querySelectorAll("#taskList li").forEach(li => {
   const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "");
   const text = li.querySelectorAll("span")[1].textContent;
   const completed = li.classList.contains("completed");
-  tasks.push({ text, category, completed });
+  const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
+
+    tasks.push({
+        text: match[1],
+        date: match[2] || "",
+        category: category,
+        completed: completed
+    });
 });
 localStorage.setItem("tasks", JSON.stringify(tasks));
 }
