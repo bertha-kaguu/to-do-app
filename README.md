@@ -8,6 +8,7 @@ A clean and responsive To-Do List web application built using HTML, CSS, and Jav
 - Delete tasks
 - Data saved using Local Storage
 - Responsive design
+- Assign dates to tasks
 
 ## 🛠️ Technologies Used
 - HTML5
