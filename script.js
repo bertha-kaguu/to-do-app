@@ -2,6 +2,7 @@ console.log("To-Do Loaded");
 
 const taskInput = document.getElementById("taskInput");
 const dueDateInput = document.getElementById("dueDate");
+const prioritySelect = document.getElementById("prioritySelect");
 const categorySelect = document.getElementById("categorySelect");
 const addTaskBtn = document.getElementById("addTaskBtn");
 const taskList = document.getElementById("taskList");
@@ -71,11 +72,12 @@ function addTask() {
 const text = taskInput.value.trim();
 const date = dueDateInput.value;
 const category = categorySelect.value;
+const priority = prioritySelect.value;
 
 if (!text) return;
 
-createTaskElement({ text, date, category, completed: false });
-updateLocalStorage();
+createTaskElement({ text, date, category, priority, completed: false });
+updateLocalStorage({ text, date, category, priority, completed: false });
 
 taskInput.value = "";
 dueDateInput.value = "";
@@ -88,12 +90,14 @@ function createTaskElement(task) {
   task = {
     text: task.text || "",
     date: task.date || "",
+    priority: task.priority || "",
     category: task.category || "General",
     completed: task.completed || false
 };
 const li = document.createElement("li");
 if (task.completed) li.classList.add("completed");
 
+li.classList.add(`priority-${task.priority}`);
 const today = new Date().toISOString().split("T")[0];
 if (task.date && task.date < today && !task.completed) {
     li.classList.add("overdue");
@@ -164,13 +168,22 @@ document.querySelectorAll("#taskList li").forEach(li => {
   const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "").trim();
   const textFull = li.querySelectorAll("span")[1].textContent;
   const completed = li.classList.contains("completed");
+  let priority = "";
+        if (li.classList.contains("priority-High")) {
+            priority = "High";
+        } else if (li.classList.contains("priority-Medium")) {
+            priority = "Medium";
+        } else if (li.classList.contains("priority-Low")) {
+            priority = "Low";
+        }
   const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
 
     tasks.push({
         text: match ? match[1] : textFull,
         date: match && match[2] ? match[2] : "",
         category: category,
-        completed: completed
+        completed: completed,
+        priority: priority
     });
 });
 localStorage.setItem("tasks", JSON.stringify(tasks));

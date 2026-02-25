@@ -193,3 +193,15 @@
     font-size: 16px;
     outline: none;
    }
+
+   li.priority-High {
+    border-left: 5px solid red;
+  }
+
+   li.priority-Medium {
+    border-left: 5px solid yellow;
+  }
+
+   li.priority-Low {
+    border-left: 5px solid green;
+  }
