@@ -8,11 +8,17 @@ const taskList = document.getElementById("taskList");
 const filterButtons = document.querySelectorAll(".filters button");
 const themeToggle = document.getElementById("themeToggle");
 const taskCounter = document.getElementById("taskCounter");
+const searchBar = document.getElementById("searchBar");
 
 document.addEventListener("DOMContentLoaded", () => {
 loadTasks();
 loadTheme();
 updateThemeButtonText();
+});
+
+searchBar.addEventListener("keyup", function(e) {
+  const searchTerm = e.target.value.toLowerCase();
+  filterTasksBySearch(searchTerm);
 });
 
 addTaskBtn.addEventListener("click", addTask);
@@ -187,4 +193,16 @@ function loadTasks() {
 function updateCounter() {
   const tasksLeft = document.querySelectorAll("#taskList li:not(.completed)").length;
   taskCounter.textContent = `${tasksLeft} task${tasksLeft !== 1 ? "s" : ""} left`;
+}
+function filterTasksBySearch(searchTerm) {
+  const tasks = document.querySelectorAll("#taskList li");
+
+  tasks.forEach(task => {
+      const taskText = task.textContent.toLowerCase(); 
+      if (taskText.includes(searchTerm)) {
+          task.style.display = "flex";
+      } else {
+          task.style.display = "none";
+      }
+  });
 }
