@@ -79,6 +79,12 @@ updateCounter();
 
 // Create task element
 function createTaskElement(task) {
+  task = {
+    text: task.text || "",
+    date: task.date || "",
+    category: task.category || "General",
+    completed: task.completed || false
+};
 const li = document.createElement("li");
 if (task.completed) li.classList.add("completed");
 
@@ -165,10 +171,18 @@ localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
 function loadTasks() {
-const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-tasks.forEach(createTaskElement);
-updateCounter();
-}
+  const data = localStorage.getItem("tasks");
+  if (!data) return;
+  
+  try {
+      const tasks = JSON.parse(data);
+      tasks.forEach(task => createTaskElement(task));
+      updateCounter();
+  } catch (e) {
+      console.error("Storage error:", e);
+      localStorage.removeItem("tasks");
+  }
+  }
 // Task counter
 function updateCounter() {
   const tasksLeft = document.querySelectorAll("#taskList li:not(.completed)").length;
