@@ -12,6 +12,7 @@ const taskCounter = document.getElementById("taskCounter");
 document.addEventListener("DOMContentLoaded", () => {
 loadTasks();
 loadTheme();
+updateThemeButtonText();
 });
 
 addTaskBtn.addEventListener("click", addTask);
@@ -173,4 +174,3 @@ function updateCounter() {
   const tasksLeft = document.querySelectorAll("#taskList li:not(.completed)").length;
   taskCounter.textContent = `${tasksLeft} task${tasksLeft !== 1 ? "s" : ""} left`;
 }
-updateThemeButtonText();
