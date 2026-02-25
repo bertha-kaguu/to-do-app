@@ -149,13 +149,13 @@ function updateLocalStorage() {
 const tasks = [];
 document.querySelectorAll("#taskList li").forEach(li => {
   const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "");
-  const text = li.querySelectorAll("span")[1].textContent;
+  const textFull = li.querySelectorAll("span")[1].textContent;
   const completed = li.classList.contains("completed");
   const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
 
     tasks.push({
-        text: match[1],
-        date: match[2] || "",
+        text: match ? match[1] : textFull,
+        date: match && match[2] ? match[2] : "",
         category: category,
         completed: completed
     });
