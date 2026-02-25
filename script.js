@@ -95,7 +95,7 @@ if (task.date && task.date < today && !task.completed) {
 
 const categorySpan = document.createElement("span");
 categorySpan.textContent = `[${task.category}] `;
-categorySpan.classList.add("task-category", task.category);
+categorySpan.classList.add("task-category", task.category.trim());
 
 const textSpan = document.createElement("span");
 let displayText = task.text;
@@ -155,7 +155,7 @@ taskList.appendChild(li);
 function updateLocalStorage() {
 const tasks = [];
 document.querySelectorAll("#taskList li").forEach(li => {
-  const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "");
+  const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "").trim();
   const textFull = li.querySelectorAll("span")[1].textContent;
   const completed = li.classList.contains("completed");
   const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
