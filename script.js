@@ -77,12 +77,25 @@ const priority = prioritySelect.value;
 if (!text) return;
 
 createTaskElement({ text, date, category, priority, completed: false });
+sortTasksByDate();
 updateLocalStorage();
 
 taskInput.value = "";
 dueDateInput.value = "";
 updateCounter();
 
+}
+function sortTasksByDate() {
+  const tasksArray = Array.from(taskList.querySelectorAll("li"));
+  
+  tasksArray.sort((a, b) => {
+      const dateA = a.dataset.date || "9999-12-31"; // no date goes last
+      const dateB = b.dataset.date || "9999-12-31";
+      return dateA.localeCompare(dateB); // sorts ascending
+  });
+
+  // Re-append sorted tasks
+  tasksArray.forEach(li => taskList.appendChild(li));
 }
 
 function getLocalDateString(date = new Date()) {
