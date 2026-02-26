@@ -10,7 +10,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  padding: 20px;
   }
   
   .container {
@@ -269,4 +270,34 @@
   body.dark .status-legend {
     background: #1e1e1e;
     color: white;
+  }
+
+  @media (max-width: 480px) {
+
+    .container {
+      padding: 15px;
+    }
+  
+    .input-section {
+      flex-direction: column;
+    }
+  
+    .input-section input,
+    .input-section select,
+    .input-section button {
+      width: 100%;
+    }
+  
+    .filters {
+      flex-direction: column;
+    }
+  
+    .filters button {
+      margin: 5px 0;
+    }
+  
+    .status-legend {
+      position: static;
+      margin-bottom: 15px;
+    }
   }
