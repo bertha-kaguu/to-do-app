@@ -15,11 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
 loadTasks();
 loadTheme();
 updateThemeButtonText();
-});
 
 searchBar.addEventListener("keyup", function(e) {
-  const searchTerm = e.target.value.toLowerCase();
-  filterTasksBySearch(searchTerm);
+    const searchTerm = e.target.value.toLowerCase();
+    filterTasksBySearch(searchTerm);
+  });
 });
 
 addTaskBtn.addEventListener("click", addTask);
@@ -77,9 +77,7 @@ const priority = prioritySelect.value;
 if (!text) return;
 
 createTaskElement({ text, date, category, priority, completed: false });
-updateLocalStorage({ text, date, category, priority, completed: false });
-
-taskInput.value = "";
+updateLocalStorage();
 dueDateInput.value = "";
 updateCounter();
 
@@ -93,128 +91,114 @@ function getLocalDateString(date = new Date()) {
 }
 // Create task element
 function createTaskElement(task) {
-  task = {
-    text: task.text || "",
-    date: task.date || "",
-    priority: task.priority || "",
-    category: task.category || "General",
-    completed: task.completed || false
-};
-const li = document.createElement("li");
-if (task.completed) li.classList.add("completed");
 
-li.classList.add(`priority-${task.priority}`);
-const today = getLocalDateString();
-if (task.date && task.date < today && !task.completed) {
-    li.classList.add("overdue");
-}
-
-if (task.date) {
+    const li = document.createElement("li");
+  
+    // Store real data on the element
+    li.dataset.text = task.text || "";
+    li.dataset.date = task.date || "";
+    li.dataset.category = task.category || "General";
+    li.dataset.priority = task.priority || "";
+    li.dataset.completed = task.completed ? "true" : "false";
+  
+    if (task.completed) li.classList.add("completed");
+    if (task.priority) li.classList.add(`priority-${task.priority}`);
+  
+    // Date styling
     const today = getLocalDateString();
-
     const tomorrowDate = new Date();
     tomorrowDate.setDate(tomorrowDate.getDate() + 1);
     const tomorrow = getLocalDateString(tomorrowDate);
-
-    li.classList.remove("overdue", "due-today", "due-tomorrow");
-
+  
     if (task.date && !task.completed) {
-        if (task.date < today) {
-            li.classList.add("overdue");
-        } 
-        else if (task.date === today) {
-            li.classList.add("due-today");
-        } 
-        else if (task.date === tomorrow) {
-            li.classList.add("due-tomorrow");
-        }
-}
-
-const categorySpan = document.createElement("span");
-categorySpan.textContent = `[${task.category}] `;
-categorySpan.classList.add("task-category", task.category.trim());
-
-const textSpan = document.createElement("span");
-let displayText = task.text;
-if (task.date) {
-    displayText += ` (Due: ${task.date})`;
-}
-if (li.classList.contains("overdue")) {
-    displayText = "⚠️ " + displayText;
-}
-
-textSpan.textContent = displayText;
-const buttons = document.createElement("div");
-buttons.classList.add("task-buttons");
-
-// Complete
-const completeBtn = document.createElement("button");
-completeBtn.textContent = "✓";
-completeBtn.classList.add("complete-btn");
-completeBtn.onclick = () => {
-    li.classList.toggle("completed");
-    li.classList.remove("overdue");
-    updateLocalStorage();
-    updateCounter();
-};
-
-// Edit
-const editBtn = document.createElement("button");
-editBtn.textContent = "Edit";
-editBtn.classList.add("edit-btn");
-editBtn.onclick = () => {
-    const newText = prompt("Edit task:", task.text);
-    if (newText) {
-        task.text = newText;
-        createTaskElement(task);
-        li.remove();
-        updateLocalStorage();;
+        if (task.date < today) li.classList.add("overdue");
+        else if (task.date === today) li.classList.add("due-today");
+        else if (task.date === tomorrow) li.classList.add("due-tomorrow");
     }
-};
-
-// Delete
-const deleteBtn = document.createElement("button");
-deleteBtn.textContent = "X";
-deleteBtn.classList.add("delete-btn");
-deleteBtn.onclick = () => {
-    li.remove();
-    updateLocalStorage();
-    updateCounter();
-};
-
-buttons.append(completeBtn, editBtn, deleteBtn);
-li.append(categorySpan, textSpan, buttons);
-taskList.appendChild(li);
-
-}
+  
+    // Category
+    const categorySpan = document.createElement("span");
+    categorySpan.textContent = `[${task.category}] `;
+    categorySpan.classList.add("task-category", task.category);
+  
+    // Text
+    const textSpan = document.createElement("span");
+    let displayText = task.text;
+  
+    if (task.date) displayText += ` (Due: ${task.date})`;
+    if (li.classList.contains("overdue")) displayText = "⚠️ " + displayText;
+  
+    textSpan.textContent = displayText;
+  
+    // Buttons container
+    const buttons = document.createElement("div");
+    buttons.classList.add("task-buttons");
+  
+    // Complete
+    const completeBtn = document.createElement("button");
+    completeBtn.textContent = "✓";
+    completeBtn.classList.add("complete-btn");
+    completeBtn.onclick = () => {
+        li.classList.toggle("completed");
+        li.dataset.completed = li.classList.contains("completed");
+        li.classList.remove("overdue");
+        updateLocalStorage();
+        updateCounter();
+    };
+  
+    // Edit
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.classList.add("edit-btn");
+    editBtn.onclick = () => {
+        const newText = prompt("Edit task:", li.dataset.text);
+        if (newText) {
+            li.dataset.text = newText;
+            li.remove();
+            createTaskElement({
+                text: newText,
+                date: li.dataset.date,
+                category: li.dataset.category,
+                priority: li.dataset.priority,
+                completed: li.dataset.completed === "true"
+            });
+            updateLocalStorage();
+            updateCounter();
+        }
+    };
+  
+    // Delete
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "X";
+    deleteBtn.classList.add("delete-btn");
+    deleteBtn.onclick = () => {
+        li.remove();
+        updateLocalStorage();
+        updateCounter();
+    };
+  
+    buttons.append(completeBtn, editBtn, deleteBtn);
+    li.append(categorySpan, textSpan, buttons);
+    taskList.appendChild(li);
+  }
 
 // Local storage
 function updateLocalStorage() {
-  const tasks = [];
-  document.querySelectorAll("#taskList li").forEach(li => {
-  const category = li.querySelector(".task-category").textContent.replace(/[\[\]]/g, "").trim();
-  const textFull = li.querySelectorAll("span")[1].textContent;
-  const completed = li.classList.contains("completed");
-  let priority = "";
-        if (li.classList.contains("priority-High")) {
-            priority = "High";
-        } else if (li.classList.contains("priority-Medium")) {
-            priority = "Medium";
-        } else if (li.classList.contains("priority-Low")) {
-            priority = "Low";
-        }
-  const match = textFull.match(/⚠️?\s?(.*?)(?: \(Due: (.*?)\))?$/);
 
-  tasks.push({
-        text: match ? match[1] : textFull,
-        date: match && match[2] ? match[2] : "",
-        category: category,
-        completed: completed,
-        priority: priority
+    const tasks = [];
+  
+    document.querySelectorAll("#taskList li").forEach(li => {
+        tasks.push({
+            text: li.dataset.text,
+            date: li.dataset.date,
+            category: li.dataset.category,
+            priority: li.dataset.priority,
+            completed: li.dataset.completed === "true"
+        });
     });
-});
-localStorage.setItem("tasks", JSON.stringify(tasks));
-}
+  
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
 
 function loadTasks() {
   const data = localStorage.getItem("tasks");
@@ -246,5 +230,4 @@ function filterTasksBySearch(searchTerm) {
           task.style.display = "none";
       }
   });
-}
 }
