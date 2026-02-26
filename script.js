@@ -78,6 +78,8 @@ if (!text) return;
 
 createTaskElement({ text, date, category, priority, completed: false });
 updateLocalStorage();
+
+taskInput.value = "";
 dueDateInput.value = "";
 updateCounter();
 
@@ -140,10 +142,10 @@ function createTaskElement(task) {
     completeBtn.classList.add("complete-btn");
     completeBtn.onclick = () => {
         li.classList.toggle("completed");
-        li.dataset.completed = li.classList.contains("completed");
+        li.dataset.completed = li.classList.contains("completed") ? "true" : "false";
         li.classList.remove("overdue");
-        updateLocalStorage();
         updateCounter();
+        updateLocalStorage();
     };
   
     // Edit
@@ -171,10 +173,10 @@ function createTaskElement(task) {
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "X";
     deleteBtn.classList.add("delete-btn");
-    deleteBtn.onclick = () => {
+    deleteBtn.onclick = () => {  
+        updateCounter();
         li.remove();
         updateLocalStorage();
-        updateCounter();
     };
   
     buttons.append(completeBtn, editBtn, deleteBtn);
