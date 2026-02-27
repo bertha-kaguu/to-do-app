@@ -32,6 +32,11 @@ todo-app/
 │── script.js
 │── README.md
 
+## 🌍 Live Demo
+
+🔗 View the live site here:  
+👉 https://bertha-kaguu.github.io/to-do-app/
+
 
 👨‍💻 Built as part of my frontend development journey.
 
