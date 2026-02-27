@@ -8,8 +8,17 @@ A clean and responsive To-Do List web application built using HTML, CSS, and Jav
 - Delete tasks
 - Data saved using Local Storage
 - Responsive design
+- Color indicators for task status
+- Dark / Light mode toggle
 - Assign dates to tasks
 - Tasks are arranged according to dates
+- Automatic due date detection:
+
+⚠️ Overdue
+
+🟠 Due Today
+
+🟡 Due Tomorrow
 
 ## 🛠️ Technologies Used
 - HTML5
