@@ -9,11 +9,12 @@ A clean and responsive To-Do List web application built using HTML, CSS, and Jav
 - Data saved using Local Storage
 - Responsive design
 - Assign dates to tasks
+- Tasks are arranged according to dates
 
 ## 🛠️ Technologies Used
 - HTML5
 - CSS3
-- JavaScript (Vanilla JS)
+- JavaScript
 
 ## 📂 Project Structure
 todo-app/
